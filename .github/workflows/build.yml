@@ -187,26 +187,31 @@ jobs:
           echo "ARCH=$ARCH" >> $GITHUB_OUTPUT
           echo "args=$args" >> $GITHUB_OUTPUT
 
-      - name: "😋 Update KernelSU"
-        working-directory: ${{ env.KERNEL_NAME }}
-        env:
-          arch: ${{ steps.generate-args.outputs.ARCH }}
-        if: ${{ env.withKernelSU == 'true' }}
-        run: |
-          if [ -d "./KernelSU" ]; then
-            rm -rf "./KernelSU"
-          fi
-          if [ -d "./drivers/kernelsu" ]; then
-            rm -rf "./drivers/kernelsu"
-          fi
+      - name: "😋 Update KernelSU (KernelSU-Next)"
+  working-directory: ${{ env.KERNEL_NAME }}
+  env:
+    arch: ${{ steps.generate-args.outputs.ARCH }}
+  if: ${{ env.withKernelSU == 'true' }}
+  run: |
+    echo "👉 Cleaning old KernelSU"
+    rm -rf KernelSU drivers/kernelsu
 
-          curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s main
+    echo "👉 Installing KernelSU-Next (legacy)"
+    curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/kernel/setup.sh" | bash -s legacy
 
-          echo -e "CONFIG_KPROBES=y" >> arch/${{ env.arch }}/configs/${{ env.DEFCONFIG_NAME }}
-          echo -e "CONFIG_HAVE_KPROBES=y" >> arch/${{ env.arch }}/configs/${{ env.DEFCONFIG_NAME }}
-          echo -e "CONFIG_KPROBE_EVENTS=y" >> arch/${{ env.arch }}/configs/${{ env.DEFCONFIG_NAME }}
+    echo "👉 Enabling kprobes + KSU configs"
 
-          cat arch/${{ env.arch }}/configs/${{ env.DEFCONFIG_NAME }}
+    CONFIG_FILE="arch/${{ env.arch }}/configs/${{ env.DEFCONFIG_NAME }}"
+
+    # Добавляем только если нет (чтобы не дублировалось)
+    grep -q "CONFIG_KPROBES=y" $CONFIG_FILE || echo "CONFIG_KPROBES=y" >> $CONFIG_FILE
+    grep -q "CONFIG_KPROBE_EVENTS=y" $CONFIG_FILE || echo "CONFIG_KPROBE_EVENTS=y" >> $CONFIG_FILE
+    grep -q "CONFIG_KSU_KPROBE_HOOKS=y" $CONFIG_FILE || echo "CONFIG_KSU_KPROBE_HOOKS=y" >> $CONFIG_FILE
+    grep -q "CONFIG_KSU=y" $CONFIG_FILE || echo "CONFIG_KSU=y" >> $CONFIG_FILE
+
+    echo "👉 Final defconfig:"
+    cat $CONFIG_FILE
+    
       # - name: 开启lxc和docker配置
       #   working-directory: ${{ env.KERNEL_NAME }}
       #   env:
