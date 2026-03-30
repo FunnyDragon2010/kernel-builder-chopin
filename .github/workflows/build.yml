@@ -97,7 +97,30 @@ jobs:
           git clone --recursive --depth=1 -j $(nproc) --branch $KERNEL_BRANCH $KERNEL_REPO $KERNEL_NAME
 
           echo "🤔 Clone kernel source => ($KERNEL_REPO)"
+- name: "📡 Add rtl8812au driver"
+  working-directory: ${{ env.KERNEL_NAME }}
+  run: |
+    echo "👉 Cloning rtl8812au driver"
+    git clone https://github.com/aircrack-ng/rtl8812au drivers/net/wireless/rtl8812au
 
+    echo "👉 Patching Makefile"
+    if ! grep -q "rtl8812au" drivers/net/wireless/Makefile; then
+      echo 'obj-$(CONFIG_RTL8812AU) += rtl8812au/' >> drivers/net/wireless/Makefile
+    fi
+
+    echo "👉 Patching Kconfig"
+    if ! grep -q "RTL8812AU" drivers/net/wireless/Kconfig; then
+      cat <<EOF >> drivers/net/wireless/Kconfig
+
+config RTL8812AU
+    tristate "Realtek 8812AU USB WiFi"
+    depends on USB
+    help
+      Driver for RTL8812AU USB WiFi adapters
+
+EOF
+    fi
+    
       - name: "💫 Get toolchains"
         env:
           toolchains: "${{ toJSON(matrix.repos.toolchains) }}"
@@ -211,6 +234,10 @@ jobs:
 
     echo "👉 Final defconfig:"
     cat $CONFIG_FILE
+    echo "CONFIG_RTL8812AU=y" >> arch/${{ env.arch }}/configs/${{ env.DEFCONFIG_NAME }}
+    echo "CONFIG_CFG80211=y" >> arch/${{ env.arch }}/configs/${{ env.DEFCONFIG_NAME }}
+    echo "CONFIG_MAC80211=y" >> arch/${{ env.arch }}/configs/${{ env.DEFCONFIG_NAME }}
+    echo "CONFIG_WLAN=y" >> arch/${{ env.arch }}/configs/${{ env.DEFCONFIG_NAME }}
     
       # - name: 开启lxc和docker配置
       #   working-directory: ${{ env.KERNEL_NAME }}
