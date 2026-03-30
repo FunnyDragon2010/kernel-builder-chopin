@@ -1,11 +1,11 @@
 [
   {
     "kernelSource": {
-      "name": "bxsj-KernelSU-Proton-release",
-      "repo": "https://github.com/AOSP-13-Mediatek/kernel_xiaomi_chopin",
-      "branch": "r",
-      "device": "chopin",
-      "defconfig": "chopin_user_defconfig"
+      "name": "alioth-KernelSU-Next",
+      "repo": "https://github.com/TIMISONG-dev/kernel_xiaomi_sm8250",
+      "branch": "master",
+      "device": "alioth",
+      "defconfig": "alioth_defconfig"
     },
     "withKernelSU": true,
     "toolchains": [
@@ -21,6 +21,7 @@
       "ARCH": "arm64",
       "CC": "proton-clang/bin/clang",
       "externalCommand": {
+        "CLANG_TRIPLE": "aarch64-linux-gnu-",
         "CROSS_COMPILE": "proton-clang/bin/aarch64-linux-gnu-",
         "CROSS_COMPILE_ARM32": "proton-clang/bin/arm-linux-gnueabi-",
         "LD": "proton-clang/bin/ld.lld",
@@ -29,11 +30,7 @@
         "OBJCOPY": "proton-clang/bin/llvm-objcopy",
         "OBJDUMP": "proton-clang/bin/llvm-objdump",
         "READELF": "proton-clang/bin/llvm-readelf",
-        "OBJSIZE": "proton-clang/bin/llvm-size",
-        "STRIP": "proton-clang/bin/llvm-strip",
-        "LDGOLD": "proton-clang/bin/aarch64-linux-gnu-ld.gold",
-        "LLVM_AR": "proton-clang/bin/llvm-ar",
-        "LLVM_DIS": "proton-clang/bin/llvm-dis"
+        "STRIP": "proton-clang/bin/llvm-strip"
       }
     },
     "AnyKernel3": {
