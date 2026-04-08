@@ -1,36 +1,39 @@
 [
   {
     "kernelSource": {
-      "name": "alioth-KernelSU-Next",
-      "repo": "https://github.com/TIMISONG-dev/kernel_xiaomi_sm8250",
-      "branch": "master",
+      "name": "alioth-nethunter-KPM",
+      "repo": "https://github.com/FunnyDragon2010/kernel_xiaomi_sm8250_KPM",
+      "branch": "base",
       "device": "alioth",
-      "defconfig": "alioth_defconfig"
+      "defconfig": "nethunter_defconfig_alioth"
     },
     "withKernelSU": true,
     "toolchains": [
       {
-        "repo": "https://github.com/kdrag0n/proton-clang",
-        "branch": "master",
-        "name": "proton-clang",
+        "repo": "https://github.com/Neutron-Toolchains/clang",
+        "branch": "main",
+        "name": "neutron-clang",
         "binPath": ["bin"]
       }
     ],
     "ccache": false,
     "params": {
       "ARCH": "arm64",
-      "CC": "proton-clang/bin/clang",
+      "CC": "neutron-clang/bin/clang",
+      "LLVM": "1",
+      "LLVM_IAS": "1",
       "externalCommand": {
-        "CLANG_TRIPLE": "aarch64-linux-gnu-",
-        "CROSS_COMPILE": "proton-clang/bin/aarch64-linux-gnu-",
-        "CROSS_COMPILE_ARM32": "proton-clang/bin/arm-linux-gnueabi-",
-        "LD": "proton-clang/bin/ld.lld",
-        "AR": "proton-clang/bin/llvm-ar",
-        "NM": "proton-clang/bin/llvm-nm",
-        "OBJCOPY": "proton-clang/bin/llvm-objcopy",
-        "OBJDUMP": "proton-clang/bin/llvm-objdump",
-        "READELF": "proton-clang/bin/llvm-readelf",
-        "STRIP": "proton-clang/bin/llvm-strip"
+        "CROSS_COMPILE": "neutron-clang/bin/aarch64-linux-gnu-",
+        "CROSS_COMPILE_ARM32": "neutron-clang/bin/arm-linux-gnueabi-",
+        "LD": "neutron-clang/bin/ld.lld",
+        "AR": "neutron-clang/bin/llvm-ar",
+        "NM": "neutron-clang/bin/llvm-nm",
+        "OBJCOPY": "neutron-clang/bin/llvm-objcopy",
+        "OBJDUMP": "neutron-clang/bin/llvm-objdump",
+        "READELF": "neutron-clang/bin/llvm-readelf",
+        "STRIP": "neutron-clang/bin/llvm-strip",
+        "HOSTCC": "gcc",
+        "HOSTLD": "ld"
       }
     },
     "AnyKernel3": {
